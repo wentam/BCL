@@ -16,9 +16,11 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -80,13 +82,18 @@ public class MainActivity extends AppCompatActivity {
         if (action.equals("center_button.pressed")) {
             // launch based on selectedIndex
             String activityToLaunch = launchers.get(selectedIndex)[0];
-
                 Intent intent = new Intent();
-                Log.d("BCL",launchers.get(selectedIndex)[2]);
-                Log.d("BCL",activityToLaunch);
                 intent.setClassName(launchers.get(selectedIndex)[2],activityToLaunch);
                 startActivity(intent);
         }
+    }
+
+    private void handleInactiveKeyPress(String action) {
+        if (action.equals("right_button.long_pressed")) {
+            Intent intent= new Intent(this,MainActivity.class);
+            startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
+        }
+
     }
 
 
@@ -122,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 if (ignoreInput == false) {
                     handleKeyPress(intent.getAction().split("\\.")[4] + "." + intent.getAction().split("\\.")[5]);
+                } else {
+                    handleInactiveKeyPress(intent.getAction().split("\\.")[4] + "." + intent.getAction().split("\\.")[5]);
                 }
             }
         };
@@ -148,6 +157,8 @@ public class MainActivity extends AppCompatActivity {
 
         setScreenBrightness(10);
         startKeyPressListener();
+
+        ((TextView) findViewById(R.id.selectText)).getPaint().setAntiAlias(false);
 
         // get a list of launchers available
         launchers = new ArrayList<String[]>();

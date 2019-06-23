@@ -1,5 +1,6 @@
 package us.egeler.matt.bcl;
 
+import android.graphics.Typeface;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -37,9 +38,11 @@ public class menuAdapter extends  RecyclerView.Adapter<menuAdapter.MyViewHolder>
         // create a new view
         ConstraintLayout l = (ConstraintLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.menu_item, parent, false);
         TextView v = l.findViewById(R.id.textView1);
+        v.getPaint().setTypeface(Typeface.create("Helvetica",Typeface.NORMAL));
         v.getPaint().setAntiAlias(false);
 
         TextView v2 = l.findViewById(R.id.textView2);
+        v2.getPaint().setTypeface(Typeface.create("Helvetica",Typeface.NORMAL));
         v2.getPaint().setAntiAlias(false);
 
         MyViewHolder vh = new MyViewHolder(l);
