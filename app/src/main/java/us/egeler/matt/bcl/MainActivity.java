@@ -1,5 +1,7 @@
 package us.egeler.matt.bcl;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String[]> launchers;
     private int selectedIndex = 0;
     private boolean ignoreInput = false;
+    String lastStartedService = null;
 
     private void setScreenBrightness(int brightness) {
         //Get the content resolver
@@ -80,11 +83,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (action.equals("center_button.pressed")) {
+            // kill bolt process
+            ActivityManager am = (ActivityManager) getSystemService(Activity.ACTIVITY_SERVICE);
+            am.killBackgroundProcesses("com.wahoofitness.bolt");
+            am.killBackgroundProcesses("com.wahoofitness.boltlauncher");
+
+            // kill last started process
+            if (lastStartedService != null) {
+                int index = lastStartedService.lastIndexOf('.');
+                am.killBackgroundProcesses(lastStartedService.substring(0, index));
+            }
+
             // launch based on selectedIndex
             String activityToLaunch = launchers.get(selectedIndex)[0];
                 Intent intent = new Intent();
                 intent.setClassName(launchers.get(selectedIndex)[2],activityToLaunch);
                 startActivity(intent);
+
+                lastStartedService = activityToLaunch;
         }
     }
 
